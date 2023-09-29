@@ -29,79 +29,67 @@ public class LMS {
     public static void main(String[] args) {//Main that runs the different selections and loops until the user is done
 
         try {
-            Library.add(new Book("New World Order", "Evan Tatavitto", "Fiction", Library));
-            Library.add(new Book("Hello World", "John Doe", "Mistory", Library));
-            Library.add(new Book("Working Hard", "McKennly", "Crime", Library));
 
 
+            newFile();
 
-            //findBarcode("Hello World");
-
-
-            /*newFile();
-
-            for (int i = 0; i < Library.size(); i++){
-                    System.out.println(Library.get(i).toString());
-            }*/
-
-            String urequest = "0"; // urequest = user's requested selection
-            boolean quit = false; // determines when the user selects to quit and ends loop
-
-            while(!quit){ // loops until user wants the program to end
-                sOption();
-                urequest = reader.readLine();
-
-                switch (urequest) { // option N/n = new book > R/r = remove book > A/a = shows all books > Q/q = quits program > default = tells user that's not a real selection and has them pick again
-                    case ("N"):
-                    case ("n"): {
-                        System.out.println("Starting New Book Selection!");
-                        newBook();
-                        break;
-                    }
-                    case ("R"):
-                    case ("r"): {
-                        System.out.println("Starting Remove Book Selection!");
-                        rmBook();
-                        break;
-                    }
-                    case ("O"):
-                    case ("o"): {
-                        System.out.println("Starting Check Out Book!");
-                        checkOut();
-                        break;
-                    }
-                    case ("I"):
-                    case ("i"): {
-                        System.out.println("Starting Check In Book!");
-                        checkIn();
-                        break;
-                    }
-                    case ("A"):
-                    case ("a"): {
-                        System.out.println("Starting View Book Collection!");
-                        showBook();
-                        break;
-                    }
-                    case ("Q"):
-                    case ("q"):
-                        System.out.println("Quitting now!");
-                        quit = true;
-                        break;
-                    default:
-                        System.out.println("Sorry That's Not A Valid Selection! Try Again!");
-                        Thread.sleep(3000);
-                        break;
-                }
-            }
-        } catch (BadData e){
+            slcOption();
+        }
+        catch (BadData e){
             System.out.println(e.getMessage() + " is not valid try again");
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void readFile() throws Exception { //reads the beginning file and puts everything in a 2d array (like a database)
+    public static int bvt() throws Exception{//Barcode Vs Title
+        int barcode = 0;
+        String uRequest ="";
 
+        boolean type = false;
+        while(!type) {
+            System.out.println("Are you using a Barcode (B) or a Title (T) (Q to Quit)?");
+            uRequest = reader.readLine();
+            switch (uRequest) {
+
+                case ("B"):
+                case ("b"): {
+                    type = true;
+                    System.out.println("So you have a Barcode - what is it?");
+                    uRequest = reader.readLine();
+                    try {
+                        barcode = Integer.parseInt(uRequest);
+                    }catch (NumberFormatException x) {
+                        System.out.println("That's not a barcodes, try again!");
+                        bvt();
+                    }
+                    return barcode;
+                }
+                case ("T"):
+                case ("t"): {
+                    type =true;
+                    System.out.println("So you have a Title - what is it?");
+                    uRequest = reader.readLine();
+                    barcode = findBarcode(uRequest);
+                    return barcode;
+                }
+                case ("Q"):
+                case ("q"): {
+                    type =true;
+                    System.out.println("So you want to try something else!");
+                    break;
+                }
+                default: {
+                    System.out.println("Sorry That's Not A Valid Selection! Try Again!");
+                    Thread.sleep(2000);
+                    break;
+                }
+            }
+        }
+        return -1;
+    }
+    public static void readFile() throws Exception { //reads the beginning file and puts everything in a 2d array (like a database)
+        System.out.println("Reading File!");
         Scanner fscan = new Scanner(infile);
         fscan.useDelimiter(",|\\r\\n"); // allows to pull each section of the file correctly (file is CSV and endline is new book)
 
@@ -146,63 +134,50 @@ public class LMS {
         System.out.println("Making New Book!");
         Thread.sleep(3000);
     }
-    public static void checkOut() {
-        System.out.println("Checking Out Book!");
-        System.out.println("what is the barcode you need to check out");
-        String uBarcode = "";
-        try{
-            uBarcode = reader.readLine();
-            for (int i = 0; i < Library.size(); i++) {
-                if (Integer.parseInt(uBarcode) == Library.get(i).getBarcode()){
-                    if(Library.get(i).getStatus()){
-                        System.out.println("Sorry Thats been checked out please confirm if you wanted to check this in!");
-                    }else {
-                        Library.get(i).setStatus(true);
-                        LocalDate dueDate = LocalDate.now();
-                        dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
-                        Library.get(i).setDueDate(String.valueOf(dueDate));
-                        System.out.println(Library.get(i).toString());
-                        Thread.sleep(3000);
+    public static void checkOut(int barcode) {
+        if(barcode > 0){
+            try {
+                int s = 0;
+                for (int i = 0; i < Library.size(); i++) {
+                    if (barcode == Library.get(i).getBarcode()) {
+                        if (Library.get(i).getStatus()) {
+                            System.out.println("Sorry Thats been checked out please confirm if you wanted to check this in!");
+                        } else {
+                            System.out.println("Checking Out Book!");
+                            Library.get(i).setStatus(true);
+                            LocalDate dueDate = LocalDate.now();
+                            dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
+                            Library.get(i).setDueDate(String.valueOf(dueDate));
+                            System.out.println(Library.get(i).toString());
+                            Thread.sleep(3000);
+                        }
                     }
                 }
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (NumberFormatException x) {
-            System.out.println("That's not a barcodes, try again!");
-            checkOut();
-        }catch (InterruptedException e){
+            } catch (InterruptedException e) {
 
+            }
         }
 
-
     }
-    public static void checkIn() {
-        System.out.println("Checking In Book!");
-        System.out.println("what is the barcode you need to check in");
-
-        String uBarcode = "";
-        try{
-            uBarcode = reader.readLine();
-            for (int i = 0; i < Library.size(); i++) {
-                if (Integer.parseInt(uBarcode) == Library.get(i).getBarcode()){
-                    if(!Library.get(i).getStatus()){
-                        System.out.println("Sorry Thats been checked in please confirm if you wanted to check this out!");
-                    }else {
-                        Library.get(i).setStatus(false);
-                        Library.get(i).setDueDate("NULL");
-                        System.out.println(Library.get(i).toString());
-                        Thread.sleep(3000);
+    public static void checkIn(int barcode) {
+        if(barcode > 0) {
+            try {
+                for (int i = 0; i < Library.size(); i++) {
+                    if (barcode == Library.get(i).getBarcode()) {
+                        if (!Library.get(i).getStatus()) {
+                            System.out.println("Sorry Thats been checked in please confirm if you wanted to check this out!");
+                        } else {
+                            System.out.println("Checking In Book!");
+                            Library.get(i).setStatus(false);
+                            Library.get(i).setDueDate("NULL");
+                            System.out.println(Library.get(i).toString());
+                            Thread.sleep(3000);
+                        }
                     }
                 }
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (NumberFormatException x) {
-            System.out.println("That's not a barcodes, try again!");
-            checkIn();
-        }catch (InterruptedException e){
+            } catch (InterruptedException e) {
 
+            }
         }
     }
 
@@ -210,7 +185,7 @@ public class LMS {
     //need to add to check in and out and remove
 
 
-    public static void findBarcode(String title){
+    public static int findBarcode(String title) throws InterruptedException{
         Barcodes.clear();
         for (int i = 0; i < Library.size(); i++){
             if (Library.get(i).getTitle().equals(title)){
@@ -219,15 +194,18 @@ public class LMS {
         }
         if (Barcodes.size() == 0) {
             System.out.println("Nothing fits that sorry try again!");
+            Thread.sleep(2000);
         }else{
+            System.out.println("Barcodes with this Title >");
             for (int i = 0; i < Barcodes.size(); i++) {
-                System.out.println("Barcodes with this Title >");
                 System.out.println(Barcodes.get(i).getBarcode());
-                sBarcode(Barcodes,title);
             }
+            Thread.sleep(500);
+            return slcBarcode(Barcodes,title);
         }
+        return -1;
     }
-    public static void sBarcode(List<Book> barcodes,String title) {
+    public static int slcBarcode(List<Book> barcodes, String title) throws InterruptedException{
         String uBarcode = "";
         System.out.println("Now please select the barcode you need");
         try {
@@ -235,46 +213,43 @@ public class LMS {
             int s = 0;
             for (int i = 0; i < Barcodes.size(); i++) {
                 if (Barcodes.get(i).getBarcode() == Integer.parseInt(uBarcode)) {
-
+                    return Barcodes.get(i).getBarcode();
                 } else {
                     s++;
                 }
             }
             if(Barcodes.size() == s){
                 System.out.println("That's not on the list, try again!");
-                sBarcode(barcodes,title);
+                Thread.sleep(2000);
+                slcBarcode(barcodes,title);
             }
         }catch (NumberFormatException x){
             System.out.println("That's not a barcodes, try again!");
+            Thread.sleep(2000);
             findBarcode(title);
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
+        return -1;
     }
-    public static void rmBook() throws Exception{// removes book at pulled index from findId - and if invalid requests a new one
-        System.out.println("What is the barcode of the book you would like to remove");
-        String uBarcode = "";
-        first:
-        try {
-            uBarcode = reader.readLine();
-            for (int i = 0; i < Library.size(); i++) {
-                if (Integer.parseInt(uBarcode) == Library.get(i).getBarcode()){
-                    Library.remove(i);
-                    Thread.sleep(3000);
-                    break first;
-                }
-            }
-            System.out.println("Sorry Couldn't find this barcode to remove try again");
-            Thread.sleep(3000);
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (NumberFormatException x) {
-            System.out.println("That's not a barcodes, try again!");
-            checkIn();
-        }catch (InterruptedException e){
+    public static void rmBook(int barcode) throws Exception{// removes book at pulled index from findId - and if invalid requests a new one
+        if(barcode > 0) {
+            first:
+            try {
 
+                for (int i = 0; i < Library.size(); i++) {
+                    if (barcode == Library.get(i).getBarcode()) {
+                        System.out.println("Removing Book!");
+                        Library.remove(i);
+                        Thread.sleep(3000);
+                        break first;
+                    }
+                }
+                System.out.println("Sorry Couldn't find this barcode to remove try again");
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+
+            }
         }
     }
     public static void showBook() throws Exception{//lists all books in books array correctly formatted
@@ -283,7 +258,7 @@ public class LMS {
         }
         Thread.sleep(3000);
     }
-    public static void sOption(){//each time a selection finishes it loops back main - reduced cluder of main
+    public static void showOption(){//each time a selection finishes it loops back main - reduced cluder of main
         System.out.println("\nPlease select what to do!");
         System.out.println("Make a New book (N)");
         System.out.println("Remove a book (R)");
@@ -291,5 +266,66 @@ public class LMS {
         System.out.println("Check In a book (I)");
         System.out.println("See All books (A)");
         System.out.println("Quit (Q)");
+    }
+    public static void slcOption(){
+
+        try{
+            String urequest = "0"; // urequest = user's requested selection
+            boolean quit = false; // determines when the user selects to quit and ends loop
+
+            while(!quit){ // loops until user wants the program to end
+                showOption();
+                urequest = reader.readLine();
+
+                switch (urequest) { // option N/n = new book > R/r = remove book > A/a = shows all books > Q/q = quits program > default = tells user that's not a real selection and has them pick again
+                    case ("N"):
+                    case ("n"): {
+                        System.out.println("Starting New Book Selection!");
+                        newBook();
+                        break;
+                    }
+                    case ("R"):
+                    case ("r"): {
+                        System.out.println("Starting Remove Book Selection!");
+                        rmBook(bvt());
+                        break;
+                    }
+                    case ("O"):
+                    case ("o"): {
+                        System.out.println("Starting Check Out Book!");
+                        checkOut(bvt());
+                        break;
+                    }
+                    case ("I"):
+                    case ("i"): {
+                        System.out.println("Starting Check In Book!");
+                        checkIn(bvt());
+                        break;
+                    }
+                    case ("A"):
+                    case ("a"): {
+                        System.out.println("Starting View Book Collection!");
+                        showBook();
+                        break;
+                    }
+                    case ("Q"):
+                    case ("q"):{
+                        System.out.println("Quitting now!");
+                        quit = true;
+                        break;
+                    }
+                    default:{
+                        System.out.println("Sorry That's Not A Valid Selection! Try Again!");
+                        Thread.sleep(3000);
+                        break;
+                    }
+                }
+            }
+        } catch (BadData e){
+            System.out.println(e.getMessage() + " is not valid try again");
+            slcOption();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

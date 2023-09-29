@@ -60,7 +60,9 @@ public class Book {
 	}
 
 	public void setBarcode(int barcode) {
-		Barcode = barcode;
+		if (barcode>0) {
+			Barcode = barcode;
+		}
 	}
 
 	private String Title="";
