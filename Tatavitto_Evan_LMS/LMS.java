@@ -38,7 +38,6 @@ public class LMS {
             e.printStackTrace();
         }
     }
-
     public static int bvt() throws Exception{//Barcode Vs Title - asks if they have a barcode or a title - if title continues to findBarcode which will return a barcode of the selected book
         int barcode = 0;
         String uRequest ="";
@@ -177,7 +176,6 @@ public class LMS {
             }
         }
     }
-
     public static int findBarcode(String title) throws InterruptedException{// used to find and list all books with a set title
         Barcodes.clear(); // incase title was used before - removes everything
         for (int i = 0; i < Library.size(); i++){
@@ -214,12 +212,12 @@ public class LMS {
             if(Barcodes.size() == s){// confirming if barcodes list finishes and didn't find a barcode to let the user know and try again
                 System.out.println("That's not on the list, try again!");
                 Thread.sleep(2000);
-                slcBarcode(barcodes,title);
+                return slcBarcode(barcodes,title);
             }
         }catch (NumberFormatException x){
             System.out.println("That's not a barcodes, try again!");
             Thread.sleep(2000);
-            findBarcode(title);
+            return findBarcode(title);
         }catch (Exception e){
             e.printStackTrace();
         }
