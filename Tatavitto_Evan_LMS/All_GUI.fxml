@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Control">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Control">
     <Label layoutX="261.0" layoutY="14.0" text="All Page">
         <font>
-          <Font name="System Bold" size="20.0"/>
+          <Font name="System Bold" size="20.0" />
         </font>
     </Label>
     <TableView fx:id="allTable" editable="true" layoutX="25.0" layoutY="50.0" prefHeight="300.0" prefWidth="550.0">
         <columns>
           <TableColumn fx:id="tableBarcode" text="Barcode">
               <cellValueFactory>
-                  <PropertyValueFactory property="barcode"/>
+                  <PropertyValueFactory property="barcode" />
               </cellValueFactory>
           </TableColumn>
           <TableColumn fx:id="tableTitle" text="Title">
               <cellValueFactory>
-                  <PropertyValueFactory property="title"/>
+                  <PropertyValueFactory property="title" />
               </cellValueFactory>
           </TableColumn>
           <TableColumn fx:id="tableAuthor" text="Author">
               <cellValueFactory>
-                  <PropertyValueFactory property="author"/>
+                  <PropertyValueFactory property="author" />
               </cellValueFactory>
           </TableColumn>
           <TableColumn fx:id="tableStatus" text="isCheckedOut">
               <cellValueFactory>
-                  <PropertyValueFactory property="status"/>
+                  <PropertyValueFactory property="status" />
               </cellValueFactory>
           </TableColumn>
           <TableColumn fx:id="tableDueDate" text="dueDate">
               <cellValueFactory>
-                  <PropertyValueFactory property="dueDate"/>
+                  <PropertyValueFactory property="dueDate" />
               </cellValueFactory>
           </TableColumn>
           <TableColumn fx:id="tableGenre" text="Genre">
               <cellValueFactory>
-                  <PropertyValueFactory property="genre"/>
+                  <PropertyValueFactory property="genre" />
               </cellValueFactory>
           </TableColumn>
         </columns>
@@ -52,7 +54,6 @@
             </FXCollections>
         </items>
     </TableView>
-    <Button fx:id="showBtn" layoutX="125.0" layoutY="361.0" mnemonicParsing="false" onAction="#loadBooks"
-            text="Show Books"/>
-    <Button fx:id="LMSBackBtn" layoutX="431.0" layoutY="361.0" mnemonicParsing="false" text="Return"/>
+    <Button fx:id="showBtn" layoutX="125.0" layoutY="361.0" mnemonicParsing="false" onAction="#loadBooks" text="Show Books" />
+    <Button fx:id="LMSBackBtn" layoutX="431.0" layoutY="361.0" mnemonicParsing="false" onAction="#backOnClick" text="Return" />
 </AnchorPane>
