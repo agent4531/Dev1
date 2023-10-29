@@ -62,7 +62,7 @@ public class Book {
 		Status = status;
 	}
 
-	public int getBarcode() {
+	public Integer getBarcode() {
 		return Barcode;
 	}
 
@@ -77,7 +77,7 @@ public class Book {
 	private String Genre ="";
 	private String DueDate = "NULL";
 	private Boolean Status =false;
-	private int Barcode =  NULL;
+	private Integer Barcode =  NULL;
 
 	public Book (String title, String author,String genre, List<Book> Library) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
 		setTitle(title);
@@ -110,8 +110,8 @@ public class Book {
 		}
 	}
 
-	@Override
-	public String toString() {// shows the current status of the book in the Library in comma delimiter
-		return 	Title + ", " + Author +	", " + Genre + ", " + DueDate +	", " + Status +	", " + Barcode;
-	}
+//	@Override
+//	public String toString() {// shows the current status of the book in the Library in comma delimiter
+//		return 	Barcode +	", " + Title + ", " + Author  +	", " + Status + ", " + DueDate + ", " + Genre;
+//	}
 }

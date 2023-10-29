@@ -1,3 +1,7 @@
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,10 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Controller {
+public class Control {
 
 		static List<Book> Library = new ArrayList<Book>();
 		File infile;
+		int barcode = 0;
 		@FXML
 		private Button allBtn;
 		@FXML
@@ -27,6 +32,10 @@ public class Controller {
 		private Button outBtn;
 		@FXML
 		private Button removeBtn;
+		@FXML
+		private Button LMSBackBtn;
+		@FXML
+		private Button showBtn;
 		@FXML
 		private Label authorTxt;
 		@FXML
@@ -48,19 +57,19 @@ public class Controller {
 		@FXML
 		private TextField fileTxt;
 		@FXML
-		private TableView<Book> allTable = new TableView<>();
+		private TableView<Book> allTable; //= new TableView<>();
 		@FXML
-		private TableColumn<Book, ?> tableAuthor = new TableColumn<>("Author");
+		private TableColumn<Book, String> tableAuthor;
 		@FXML
-		private TableColumn<Book, ?> tableBarcode = new TableColumn<>("Barcode");
+		private TableColumn<Book, Integer> tableBarcode;
 		@FXML
-		private TableColumn<Book, ?> tableDueDate = new TableColumn<>("Due Date");
+		private TableColumn<Book, String> tableDueDate;
 		@FXML
-		private TableColumn<Book, ?> tableGenre = new TableColumn<>("Genre");
+		private TableColumn<Book, String> tableGenre;
 		@FXML
-		private TableColumn<Book, ?> tableStatus = new TableColumn<>("Status");
+		private TableColumn<Book, Boolean> tableStatus;
 		@FXML
-		private TableColumn<Book, ?> tableTitle = new TableColumn<>("Title");
+		private TableColumn<Book, String> tableTitle;
 		Alert alert = new Alert(Alert.AlertType.NONE);
 		Stage stage;
 
@@ -127,23 +136,40 @@ public class Controller {
 	}
 	@FXML
 	void allOnClick(ActionEvent event) throws IOException {
-		ObservableList<Book> data = allTable.getItems();
-		data.add(Library.get(0));
-
-
-//		for (int i = 0; i < Library.size(); i++){
-//			allTable.getItems().add(Library.get(i));
-//		}
-//		alert.setAlertType(Alert.AlertType.ERROR);
-//		alert.setContentText(Library.get(0).getBarcode() + ", " + Library.get(0).getTitle() + ", " + Library.get(0).getAuthor() + ", " + Library.get(0).getStatus() + ", " + Library.get(0).getDueDate() + ", " + Library.get(0).getGenre());
-//		alert.show();
-
 		stage = (Stage) allBtn.getScene().getWindow();
 		FXMLLoader allLoader = new FXMLLoader(GUI.class.getResource("All_GUI.fxml"));
 		Scene allScene = new Scene(allLoader.load());
 		stage.setTitle("Show All Books");
 		stage.setScene(allScene);
 		stage.show();
+
+//		alert.setAlertType(Alert.AlertType.ERROR);
+//		alert.setContentText(Library.get(0).getBarcode() + ", " + Library.get(0).getTitle() + ", " + Library.get(0).getAuthor() + ", " + Library.get(0).getStatus() + ", " + Library.get(0).getDueDate() + ", " + Library.get(0).getGenre());
+//		alert.show();
+
+
+
+	}
+	@FXML
+	void loadBooks(ActionEvent event) {
+
+
+		tableBarcode.setCellValueFactory(new PropertyValueFactory<Book,Integer>("barcode"));
+		tableTitle.setCellValueFactory(new PropertyValueFactory<Book,String>("title"));
+		tableAuthor.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
+		tableStatus.setCellValueFactory(new PropertyValueFactory<Book,Boolean>("status"));
+		tableDueDate.setCellValueFactory(new PropertyValueFactory<Book,String>("dueDate"));
+		tableGenre.setCellValueFactory(new PropertyValueFactory<Book,String>("genre"));
+
+		allTable.getColumns().clear();
+		allTable.getColumns().addAll(tableBarcode,tableTitle,tableAuthor,tableStatus,tableDueDate,tableGenre);
+
+		ObservableList<Book> data = FXCollections.observableArrayList(Library);
+
+
+		allTable.setItems(data);
+		System.out.println(allTable.getItems().toString());
+
 	}
 
 	@FXML
