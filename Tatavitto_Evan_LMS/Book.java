@@ -37,7 +37,7 @@ public class Book {
 	}
 
 	public void setGenre(String genre) {// sets the genre and check that it is not blank and less the 11 char (planed limit for SQL) - if false add nothing - checked after all setters are ran
-		if (genre.length() < 11 && !genre.isBlank()) {
+		if (genre.length() < 12 && !genre.isBlank()) {
 			Genre = genre;
 		}
 	}
