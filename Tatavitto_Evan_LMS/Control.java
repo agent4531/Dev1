@@ -239,22 +239,28 @@ public class Control {
 				break trybarcode;
 			}
 			if (barcode > 0) {
-				for (int i = 0; i < Library.size(); i++) {
-					if (barcode == Library.get(i).getBarcode()) {// removes book at found barcode - barcode is unique so only need to find one book
-						Library.remove(i);
+				first:
+				{
+// used to break try case
+					for (int i = 0; i < Library.size(); i++) {
+						if (barcode == Library.get(i).getBarcode()) {// removes book at found barcode - barcode is unique so only need to find one book
+							Library.remove(i);
 
-						// sends to main after removing book
-						stage = (Stage) barcodeTxt.getScene().getWindow();
-						FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-						Scene LMSScene = new Scene(LMSLoader.load());
-						stage.setTitle("LMS");
-						stage.setScene(LMSScene);
-						stage.show();
+							// sends to main after removing book
+							stage = (Stage) barcodeTxt.getScene().getWindow();
+							FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+							Scene LMSScene = new Scene(LMSLoader.load());
+							stage.setTitle("LMS");
+							stage.setScene(LMSScene);
+							stage.show();
+
+							break first;
 						}
 					}// alerts user of barcode not in the library
 					alert.setAlertType(Alert.AlertType.ERROR);
 					alert.setContentText("Sorry couldn't find this barcode to remove try again");
 					alert.show();
+				}
 			}else{ // alerts user of numbers below zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
@@ -299,29 +305,35 @@ public class Control {
 				break trybarcode;
 			}
 			if (barcode > 0) {
-				for (int i = 0; i < Library.size(); i++) {
-					if (barcode == Library.get(i).getBarcode()) {// looks to check in book at found barcode - barcode is unique so only need to find one book
-						if (!Library.get(i).getStatus()) {// if checked in already - lets the user know - no action taken
-							alert.setAlertType(Alert.AlertType.ERROR);
-							alert.setContentText("Sorry that's been checked in please confirm if you wanted to check this out!");
-							alert.show();
-						} else {// book is not checked in - checks the book in - also removes due date
-							Library.get(i).setStatus(false);
-							Library.get(i).setDueDate("NULL");
+				first:
+				{
+// used to break try case
+					for (int i = 0; i < Library.size(); i++) {
+						if (barcode == Library.get(i).getBarcode()) {// removes book at found barcode - barcode is unique so only need to find one book
+							if (!Library.get(i).getStatus()) {// if checked in already - lets the user know - no action taken
+								alert.setAlertType(Alert.AlertType.ERROR);
+								alert.setContentText("Sorry that's been checked in please confirm if you wanted to check this out!");
+								alert.show();
+							} else {// book is not checked in - checks the book in - also removes due date
+								Library.get(i).setStatus(false);
+								Library.get(i).setDueDate("NULL");
 
-							// sends to main after check in
-							stage = (Stage) barcodeTxt.getScene().getWindow();
-							FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-							Scene LMSScene = new Scene(LMSLoader.load());
-							stage.setTitle("LMS");
-							stage.setScene(LMSScene);
-							stage.show();
+								// sends to main after Check In
+								stage = (Stage) barcodeTxt.getScene().getWindow();
+								FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+								Scene LMSScene = new Scene(LMSLoader.load());
+								stage.setTitle("LMS");
+								stage.setScene(LMSScene);
+								stage.show();
+							}
+							break first;
 						}
 					}
 				}// lets user know barcode is not in the library
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Sorry couldn't find this barcode to Check In try again");
 				alert.show();
+
 			}else{// lets user know barcode needs to be bigger then zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
@@ -343,25 +355,29 @@ public class Control {
 				break trybarcode;
 			}
 			if (barcode > 0) {
-				for (int i = 0; i < Library.size(); i++) {// looks for barcode in List
-					if (barcode == Library.get(i).getBarcode()) {// once found does...
-						if (Library.get(i).getStatus()) {// if checked out already - lets the user know - no action taken
-							alert.setAlertType(Alert.AlertType.ERROR);
-							alert.setContentText("Sorry Thats been checked out please confirm if you wanted to check this in!");
-							alert.show();
-						} else {// book is not checked out - checks the book out - also sets due date
-							Library.get(i).setStatus(true);
-							LocalDate dueDate = LocalDate.now();
-							dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
-							Library.get(i).setDueDate(String.valueOf(dueDate));
+				first:
+				{
+					for (int i = 0; i < Library.size(); i++) {// looks for barcode in List
+						if (barcode == Library.get(i).getBarcode()) {// once found does...
+							if (Library.get(i).getStatus()) {// if checked out already - lets the user know - no action taken
+								alert.setAlertType(Alert.AlertType.ERROR);
+								alert.setContentText("Sorry Thats been checked out please confirm if you wanted to check this in!");
+								alert.show();
+							} else {// book is not checked out - checks the book out - also sets due date
+								Library.get(i).setStatus(true);
+								LocalDate dueDate = LocalDate.now();
+								dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
+								Library.get(i).setDueDate(String.valueOf(dueDate));
 
-							//sends to main once done
-							stage = (Stage) barcodeTxt.getScene().getWindow();
-							FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-							Scene LMSScene = new Scene(LMSLoader.load());
-							stage.setTitle("LMS");
-							stage.setScene(LMSScene);
-							stage.show();
+								// sends to main after Check Out
+								stage = (Stage) barcodeTxt.getScene().getWindow();
+								FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+								Scene LMSScene = new Scene(LMSLoader.load());
+								stage.setTitle("LMS");
+								stage.setScene(LMSScene);
+								stage.show();
+							}
+							break first;
 						}
 					}
 				}// lets user know barcode is not in library
