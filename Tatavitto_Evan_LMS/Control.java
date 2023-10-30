@@ -329,11 +329,11 @@ public class Control {
 							break first;
 						}
 					}
-				}// lets user know barcode is not in the library
-				alert.setAlertType(Alert.AlertType.ERROR);
-				alert.setContentText("Sorry couldn't find this barcode to Check In try again");
-				alert.show();
-
+					// lets user know barcode is not in the library
+					alert.setAlertType(Alert.AlertType.ERROR);
+					alert.setContentText("Sorry couldn't find this barcode to Check In try again");
+					alert.show();
+				}
 			}else{// lets user know barcode needs to be bigger then zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
@@ -379,16 +379,18 @@ public class Control {
 							}
 							break first;
 						}
-					}
-				}// lets user know barcode is not in library
-				alert.setAlertType(Alert.AlertType.ERROR);
-				alert.setContentText("Sorry couldn't find this barcode to Check Out try again");
-				alert.show();
+
+					}// lets user know barcode is not in library
+					alert.setAlertType(Alert.AlertType.ERROR);
+					alert.setContentText("Sorry couldn't find this barcode to Check Out try again");
+					alert.show();
+				}
 			}else{// lets user know the barcode needs to be bigger than zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
 				alert.show();
 			}
+
 		}
 	}
 }
