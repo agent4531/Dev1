@@ -8,6 +8,14 @@ import java.io.IOException;
 
 public class GUI extends Application {
 
+	/*
+	 *   Name:               Evan Tatavitto
+	 *   Course:             Dev1
+	 *   Date:               10/28/2023
+	 *   Class:              GUI
+	 *   For:                This class makes the new window for the GUI
+	 *
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

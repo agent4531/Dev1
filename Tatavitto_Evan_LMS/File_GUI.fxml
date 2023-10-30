@@ -6,6 +6,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<!--
+
+/*
+*   Name:               Evan Tatavitto
+*   Course:             Dev1
+*   Date:               10/28/2023
+*   fxml:               File_GUI
+*   For:                This fxml is the full page of the starting document - can only go back to main fxml from valid file with valid data
+*
+*/
+
+-->
+
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Control">
    <children>
       <Label layoutX="224.0" layoutY="43.0" text="File Selector">
