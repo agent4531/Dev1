@@ -97,7 +97,7 @@ public class LMS {
                 title =fscan.next();
                 author =fscan.next();
                 genre =fscan.next();
-                Library.add(new Book(title,author,genre,Library));
+                //Library.add(new Book(title,author,genre,Library));
             }
         }
         fscan.close();
@@ -125,7 +125,7 @@ public class LMS {
         System.out.println("What is the Genre?");
         String genre = reader.readLine();
 
-        Library.add(new Book(title,author,genre,Library));
+        //Library.add(new Book(title,author,genre,Library));
 
         System.out.println("Making New Book!");
         Thread.sleep(3000);

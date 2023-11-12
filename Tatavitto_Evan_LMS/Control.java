@@ -6,15 +6,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Control {
 
@@ -29,6 +31,7 @@ public class Control {
 
 		static List<Book> Library = new ArrayList<Book>();
 		static List<Book> Barcodes = new ArrayList<Book>();
+		BackEnd backEnd = new BackEnd();
 		File infile;
 		int barcode = 0;
 		@FXML
@@ -85,7 +88,7 @@ public class Control {
 		Stage stage;
 
 
-	@FXML
+	/*@FXML  -- disabled as file is now sql database - IE class BackEnd
 	void fileCheck(ActionEvent event) throws IOException { // requests and reads a file
 		first:{
 		try {
@@ -123,24 +126,37 @@ public class Control {
 			stage.show();
 		}
 	}
+	*/
+
 	@FXML
 	void newSubmit(ActionEvent event) throws IOException {//validates new books then sends to main
 		first:{
-		try {// making new book from text from new book page
-			Library.add(new Book(userTitle.getText(),userAuthor.getText(),(String) userGenre.getValue(),Library));
-		} catch (BadData e) {// throws alert if there is an issue with pulled data
-			alert.setAlertType(Alert.AlertType.ERROR);
-			alert.setContentText(e.getMessage() + " is not valid try again");
-			alert.show();
-			break first;
+			Book newBook;
+			try {// making new book from text from new book page
+				newBook = new Book(userTitle.getText(),userAuthor.getText(),(String) userGenre.getValue(),1);
+			} catch (BadData e) {// throws alert if there is an issue with pulled data
+				alert.setAlertType(Alert.AlertType.ERROR);
+				alert.setContentText(e.getMessage() + " is not valid try again");
+				alert.show();
+				break first;
 
-		}// once done places user back in main
-		stage = (Stage) newSBtn.getScene().getWindow();
-		FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-		Scene LMSScene = new Scene(LMSLoader.load());
-		stage.setTitle("LMS");
-		stage.setScene(LMSScene);
-		stage.show();
+			}// once done places user back in main
+			int statustemp = newBook.getStatus() ? 1 : 0;
+			String query = "INSERT INTO books (Title, Author, Genre, Status) VALUES ('" + newBook.getTitle() + "','" + newBook.getAuthor() + "', '" + newBook.getGenre() + "', '" + statustemp + "');";
+			try {
+				backEnd.updateBook(query);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+
+			stage = (Stage) newSBtn.getScene().getWindow();
+			FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+			Scene LMSScene = new Scene(LMSLoader.load());
+			stage.setTitle("LMS");
+			stage.setScene(LMSScene);
+			stage.show();
+
+
 		}
 
 	}
@@ -158,6 +174,14 @@ public class Control {
 	void loadBooks(ActionEvent event) {
 		// loads all books in the library
 
+		Library.clear();
+		try {
+			Library = backEnd.readDatabase();
+		}catch (BadData e) {// prevents bad data from being added into the database - ie wrong file/none csv file
+				alert.setAlertType(Alert.AlertType.ERROR);
+				alert.setContentText("Database had an error pulling data - look in \"loadBooks\" for posable need for edit ");
+				alert.show();
+		}
 		//links columns with ArrayList data
 		tableBarcode.setCellValueFactory(new PropertyValueFactory<Book,Integer>("barcode"));
 		tableTitle.setCellValueFactory(new PropertyValueFactory<Book,String>("title"));
@@ -242,24 +266,25 @@ public class Control {
 				first:
 				{
 // used to break try case
-					for (int i = 0; i < Library.size(); i++) {
-						if (barcode == Library.get(i).getBarcode()) {// removes book at found barcode - barcode is unique so only need to find one book
-							Library.remove(i);
+					try{
+						// removes book at found barcode - barcode is unique so only need to find one book
+						String query = "DELETE FROM books WHERE Barcode=" + barcodeTxt.getText();
+						backEnd.updateBook(query);
 
-							// sends to main after removing book
-							stage = (Stage) barcodeTxt.getScene().getWindow();
-							FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-							Scene LMSScene = new Scene(LMSLoader.load());
-							stage.setTitle("LMS");
-							stage.setScene(LMSScene);
-							stage.show();
+						// sends to main after removing book
+						stage = (Stage) barcodeTxt.getScene().getWindow();
+						FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+						Scene LMSScene = new Scene(LMSLoader.load());
+						stage.setTitle("LMS");
+						stage.setScene(LMSScene);
+						stage.show();
 
-							break first;
-						}
-					}// alerts user of barcode not in the library
-					alert.setAlertType(Alert.AlertType.ERROR);
-					alert.setContentText("Sorry couldn't find this barcode to remove try again");
-					alert.show();
+						break first;
+					}catch (SQLException e) {// alerts user of barcode not in the library
+						alert.setAlertType(Alert.AlertType.ERROR);
+						alert.setContentText("Sorry couldn't find this barcode to remove try again");
+						alert.show();
+					}
 				}
 			}else{ // alerts user of numbers below zero
 				alert.setAlertType(Alert.AlertType.ERROR);
@@ -272,11 +297,7 @@ public class Control {
 	@FXML
 	void titleBtn(ActionEvent event) { // shows all barcodes linked with a title - must be exact - must use barcode or back button to go back to main
 		Barcodes.clear();
-		for (int i = 0; i < Library.size(); i++){
-			if (Library.get(i).getTitle().equals(titleTxt.getText())){// finds and adds all books with selected title
-				Barcodes.add(Library.get(i));
-			}
-		}
+		Barcodes = backEnd.listBarcodes("'" + titleTxt.getText() + "'");
 		if (Barcodes.size() == 0) {// if nothing is found with this title - let user know
 			alert.setAlertType(Alert.AlertType.ERROR);
 			alert.setContentText("No Titles found with that name, try again!");
@@ -294,6 +315,7 @@ public class Control {
 
 	@FXML
 	void inBarcodeBtn(ActionEvent event) throws IOException { // used to update books to checked in
+		Book userBook;
 		trybarcode: // if barcode in not a number - prevents invalid loading of main
 		{
 			try {
@@ -308,32 +330,43 @@ public class Control {
 				first:
 				{
 // used to break try case
-					for (int i = 0; i < Library.size(); i++) {
-						if (barcode == Library.get(i).getBarcode()) {// removes book at found barcode - barcode is unique so only need to find one book
-							if (!Library.get(i).getStatus()) {// if checked in already - lets the user know - no action taken
-								alert.setAlertType(Alert.AlertType.ERROR);
-								alert.setContentText("Sorry that's been checked in please confirm if you wanted to check this out!");
-								alert.show();
-							} else {// book is not checked in - checks the book in - also removes due date
-								Library.get(i).setStatus(false);
-								Library.get(i).setDueDate("NULL");
-
-								// sends to main after Check In
-								stage = (Stage) barcodeTxt.getScene().getWindow();
-								FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-								Scene LMSScene = new Scene(LMSLoader.load());
-								stage.setTitle("LMS");
-								stage.setScene(LMSScene);
-								stage.show();
-							}
+					try {
+						userBook = backEnd.bookStatus(barcode);
+						if (!userBook.getStatus()) {// if checked in already - lets the user know - no action taken
+							alert.setAlertType(Alert.AlertType.ERROR);
+							alert.setContentText("Sorry that's been checked in please confirm if you wanted to check this out!");
+							alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+							alert.show();
 							break first;
 						}
+					}catch (SQLException e) {// prevents bad data from being added into the database - ie wrong file/none csv file
+						alert.setAlertType(Alert.AlertType.ERROR);
+						alert.setContentText("Barcode not found");
+						alert.show();
+						break first;
+					}catch (BadData e) {// prevents bad data from being added into the database - ie wrong file/none csv file
+						alert.setAlertType(Alert.AlertType.ERROR);
+						alert.setContentText("issue pulling data from the database - look at 'inBarcodeBtn'");
+						alert.show();
+						break first;
 					}
-					// lets user know barcode is not in the library
-					alert.setAlertType(Alert.AlertType.ERROR);
-					alert.setContentText("Sorry couldn't find this barcode to Check In try again");
-					alert.show();
+
+					try {
+						String query = "UPDATE books SET Status=0, DueDate=NULL WHERE Barcode=" + barcode;
+						backEnd.updateBook(query);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+					// sends to main after Check In
+						stage = (Stage) barcodeTxt.getScene().getWindow();
+						FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+						Scene LMSScene = new Scene(LMSLoader.load());
+						stage.setTitle("LMS");
+						stage.setScene(LMSScene);
+						stage.show();
+					break trybarcode;
 				}
+
 			}else{// lets user know barcode needs to be bigger then zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
@@ -344,7 +377,8 @@ public class Control {
 
 	@FXML
 	void outBarcodeBtn(ActionEvent event) throws IOException {
-		trybarcode: // checks barcode is a valid number - prevents loading of main
+		Book userBook;
+		trybarcode: // if barcode in not a number - prevents invalid loading of main
 		{
 			try {
 				barcode = Integer.parseInt(barcodeTxt.getText());
@@ -357,40 +391,52 @@ public class Control {
 			if (barcode > 0) {
 				first:
 				{
-					for (int i = 0; i < Library.size(); i++) {// looks for barcode in List
-						if (barcode == Library.get(i).getBarcode()) {// once found does...
-							if (Library.get(i).getStatus()) {// if checked out already - lets the user know - no action taken
-								alert.setAlertType(Alert.AlertType.ERROR);
-								alert.setContentText("Sorry Thats been checked out please confirm if you wanted to check this in!");
-								alert.show();
-							} else {// book is not checked out - checks the book out - also sets due date
-								Library.get(i).setStatus(true);
-								LocalDate dueDate = LocalDate.now();
-								dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
-								Library.get(i).setDueDate(String.valueOf(dueDate));
-
-								// sends to main after Check Out
-								stage = (Stage) barcodeTxt.getScene().getWindow();
-								FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
-								Scene LMSScene = new Scene(LMSLoader.load());
-								stage.setTitle("LMS");
-								stage.setScene(LMSScene);
-								stage.show();
-							}
+// used to break try case
+					try {
+						userBook = backEnd.bookStatus(barcode);
+						if (userBook.getStatus()) {// if checked in already - lets the user know - no action taken
+							alert.setAlertType(Alert.AlertType.ERROR);
+							alert.setContentText("Sorry that's been checked out please confirm if you wanted to check this in!");
+							alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+							alert.show();
 							break first;
 						}
+					}catch (SQLException e) {// prevents bad data from being added into the database - ie wrong file/none csv file
+						alert.setAlertType(Alert.AlertType.ERROR);
+						alert.setContentText("Barcode not found");
+						alert.show();
+						break first;
+					}catch (BadData e) {// prevents bad data from being added into the database - ie wrong file/none csv file
+						alert.setAlertType(Alert.AlertType.ERROR);
+						alert.setContentText("issue pulling data from the database - look at 'outBarcodeBtn'");
+						alert.show();
+						break first;
+					}
 
-					}// lets user know barcode is not in library
-					alert.setAlertType(Alert.AlertType.ERROR);
-					alert.setContentText("Sorry couldn't find this barcode to Check Out try again");
-					alert.show();
+					try {
+						LocalDate dueDate = LocalDate.now();
+						dueDate = dueDate.plus(4, ChronoUnit.WEEKS);
+						Date date = Date.valueOf(dueDate);
+						String query = "UPDATE books SET Status=1, DueDate='" + date + "' WHERE Barcode=" + barcode;
+						backEnd.updateBook(query);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+					// sends to main after Check In
+					stage = (Stage) barcodeTxt.getScene().getWindow();
+					FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
+					Scene LMSScene = new Scene(LMSLoader.load());
+					stage.setTitle("LMS");
+					stage.setScene(LMSScene);
+					stage.show();
+					break trybarcode;
 				}
-			}else{// lets user know the barcode needs to be bigger than zero
+
+			}else{// lets user know barcode needs to be bigger then zero
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText("Barcodes are bigger than zero, try again!");
 				alert.show();
 			}
-
 		}
 	}
 }

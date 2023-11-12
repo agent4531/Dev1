@@ -79,15 +79,26 @@ public class Book {
 	private Boolean Status =false;
 	private Integer Barcode =  NULL;
 
-	public Book (String title, String author,String genre, List<Book> Library) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
+	public Book (String title, String author, String genre, int barcode) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
 		setTitle(title);
 		setAuthor(author);
 		setGenre(genre);
-		this.setBarcode(giveBarcode(Library));
+		setBarcode(barcode);
 
 		checkBook();
 	}
-	public int giveBarcode(List<Book> Library){//checks what the current highest barcode is and sets it one higher - as this is a List Array the highest element should be the last one, so removes the need to validate vs all books as they are sequential
+
+	public Book (String title, String author, String genre, int barcode, Boolean status, String dueDate) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
+		setTitle(title);
+		setAuthor(author);
+		setGenre(genre);
+		setBarcode(barcode);
+		setStatus(status);
+		setDueDate(dueDate);
+
+		checkBook();
+	}
+	/*public int giveBarcode(List<Book> Library){ // removing to keep barcode from database
 		int lastR =0;
 		if (Library.size() == 0){
 			return 1;
@@ -95,7 +106,7 @@ public class Book {
 			lastR = Library.size() - 1;
 			return (Library.get(lastR).getBarcode()) + 1;
 		}
-	}
+	}*/
 
 	private void checkBook() throws BadData{//checks all data for valid info, and if invalid throws baddata exception to let the user know which field is bad - only throws one exception but could have more than one on the inputted data - does not matter as if one piece is invalid the whole book is invalid
 
@@ -110,8 +121,8 @@ public class Book {
 		}
 	}
 
-//	@Override
-//	public String toString() {// shows the current status of the book in the Library in comma delimiter
-//		return 	Barcode +	", " + Title + ", " + Author  +	", " + Status + ", " + DueDate + ", " + Genre;
-//	}
+	@Override
+	public String toString() {// shows the current status of the book in the Library in comma delimiter
+		return 	Barcode +	", " + Title + ", " + Author  +	", " + Status + ", " + DueDate + ", " + Genre;
+	}
 }
