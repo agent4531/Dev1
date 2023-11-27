@@ -133,7 +133,7 @@ public class Control {
 		first:{
 			Book newBook;
 			try {// making new book from text from new book page
-				newBook = new Book(userTitle.getText(),userAuthor.getText(),(String) userGenre.getValue(),1);
+				newBook = new Book(userTitle.getText(),userAuthor.getText(),(String) userGenre.getValue(),1,false,"NULL");
 			} catch (BadData e) {// throws alert if there is an issue with pulled data
 				alert.setAlertType(Alert.AlertType.ERROR);
 				alert.setContentText(e.getMessage() + " is not valid try again");

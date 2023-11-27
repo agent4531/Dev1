@@ -90,7 +90,7 @@ public class BackEnd {
 	public ArrayList<Book>  listBarcodes(String userTitle)  {
 
 		ArrayList<Book> Barcodes = new ArrayList<Book>();
-		String query = "SELECT Title, Author, Genre,Barcode FROM books WHERE Title=" + userTitle;
+		String query = "SELECT Title, Author, Genre, Barcode, Status, DueDate FROM books WHERE Title=" + userTitle;
 
 
 		try {
@@ -98,7 +98,15 @@ public class BackEnd {
 
 			int i = 0;
 			while (result.next()) {
-				Barcodes.add(new Book(result.getString(1),result.getString(2),result.getString(3), result.getInt(4)));
+				Boolean isCheckedOut =(result.getInt(5) != 0);
+				String dateDue;
+				result.getString(6);
+				if(result.wasNull()){
+					dateDue = "NULL";
+				}else {
+					dateDue = result.getString(6);
+				}
+				Barcodes.add(new Book(result.getString(1),result.getString(2),result.getString(3),result.getInt(4),isCheckedOut,dateDue));
 				i++;
 			}
 		} catch (SQLException e) {

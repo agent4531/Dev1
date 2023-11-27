@@ -17,7 +17,7 @@ public class Book {
 	}
 
 	public void setTitle(String title) {// sets the title and check that it is not blank and less the 50 char (planed limit for SQL) - if false add nothing - checked after all setters are ran
-		if (title.length() < 50 && !title.isBlank()) {
+		if (title.length() < 50 && title != "") {
 			Title = title;
 		}
 	}
@@ -27,7 +27,7 @@ public class Book {
 	}
 
 	public void setAuthor(String author) {// sets the author and check that it is not blank and less the 50 char (planed limit for SQL) - if false add nothing - checked after all setters are ran
-		if (author.length() < 50 && !author.isBlank()) {
+		if (author.length() < 50 && author != "") {
 			Author = author;
 		}
 	}
@@ -37,7 +37,7 @@ public class Book {
 	}
 
 	public void setGenre(String genre) {// sets the genre and check that it is not blank and less the 11 char (planed limit for SQL) - if false add nothing - checked after all setters are ran
-		if (genre.length() < 12 && !genre.isBlank()) {
+		if (genre.length() < 12 && genre != "") {
 			Genre = genre;
 		}
 	}
@@ -79,11 +79,11 @@ public class Book {
 	private Boolean Status =false;
 	private Integer Barcode =  NULL;
 
-	public Book (String title, String author, String genre, int barcode) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
+	public Book (String title, String author, String genre, List<Book> Library) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
 		setTitle(title);
 		setAuthor(author);
 		setGenre(genre);
-		setBarcode(barcode);
+
 
 		checkBook();
 	}
@@ -110,13 +110,13 @@ public class Book {
 
 	private void checkBook() throws BadData{//checks all data for valid info, and if invalid throws baddata exception to let the user know which field is bad - only throws one exception but could have more than one on the inputted data - does not matter as if one piece is invalid the whole book is invalid
 
-		if(getTitle().isBlank()) {
+		if(getTitle() == "") {
 			throw new BadData("Title");
-		} else if (getAuthor().isBlank()) {
+		} else if (getAuthor() == "") {
 			throw new BadData("Author");
 		} else if (getBarcode() < 1) {
 			throw new BadData("Barcode");
-		} else if (getGenre().isBlank()) {
+		} else if (getGenre() == "") {
 			throw new BadData("Genre");
 		}
 	}
