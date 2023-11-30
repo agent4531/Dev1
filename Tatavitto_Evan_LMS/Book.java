@@ -3,6 +3,9 @@ import java.util.regex.Pattern;
 
 import static java.sql.Types.NULL;
 
+/**
+ * Class linking all data points of a book for easy management
+ */
 public class Book {
 	/*
 	 *   Name:               Evan Tatavitto
@@ -79,6 +82,14 @@ public class Book {
 	private Boolean Status =false;
 	private Integer Barcode =  NULL;
 
+	/**
+	 * used for cmd lms - depricated
+	 * @param title title of book
+	 * @param author author of book
+	 * @param genre genre of book
+	 * @param Library array of current books
+	 * @throws BadData
+	 */
 	public Book (String title, String author, String genre, List<Book> Library) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
 		setTitle(title);
 		setAuthor(author);
@@ -88,6 +99,16 @@ public class Book {
 		checkBook();
 	}
 
+	/**
+	 * used for sql and gui
+	 * @param title title of book
+	 * @param author author of book
+	 * @param genre genre of book
+	 * @param barcode barcode of book
+	 * @param status status of book
+	 * @param dueDate due date of book
+	 * @throws BadData
+	 */
 	public Book (String title, String author, String genre, int barcode, Boolean status, String dueDate) throws BadData{ //initializer - receives all required data for a book in the Library then checks data for validity and if invalid will throw baddata exception which tells the user which data is bad
 		setTitle(title);
 		setAuthor(author);
@@ -108,6 +129,10 @@ public class Book {
 		}
 	}*/
 
+	/**
+	 * used to validate a book in case of badData
+	 * @throws BadData
+	 */
 	private void checkBook() throws BadData{//checks all data for valid info, and if invalid throws baddata exception to let the user know which field is bad - only throws one exception but could have more than one on the inputted data - does not matter as if one piece is invalid the whole book is invalid
 
 		if(getTitle() == "") {

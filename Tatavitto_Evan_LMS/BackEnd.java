@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * clase backEnd to be able to access and process sql for the gui
+ */
 public class BackEnd {
 
 	private String user = "root";
@@ -16,6 +18,11 @@ public class BackEnd {
 	private String url = "jdbc:mysql://localhost:3306/lms";
 	static Statement statement;
 
+
+	/**
+	 * makes backend - including grabing the password for the database
+	 * requiered file named sqlp.txt which holds the root password for database
+	 */
 	public BackEnd(){
 		try {
 			File infile = new File(Control.class.getResource("sqlp.txt").getPath());
@@ -35,11 +42,23 @@ public class BackEnd {
 		}
 	}
 
+	/**
+	 * performs data manipulation from gui
+ 	 * @param query custom statement from different parts of gui
+	 * @throws SQLException
+	 */
 	public void updateBook(String query) throws SQLException {
 			//ResultSet result =
 			statement.executeUpdate(query);
 	}
 
+	/**
+	 * returns book from database for data manipulation
+	 * @param barcode barcode of book needing status check
+	 * @return Book
+	 * @throws SQLException
+	 * @throws BadData
+	 */
 	public Book bookStatus(int barcode) throws SQLException, BadData {
 		String query = "SELECT Title, Author, Genre, Barcode, Status, DueDate FROM books WHERE barcode=" + barcode;
 		ResultSet result = statement.executeQuery(query);
@@ -58,6 +77,11 @@ public class BackEnd {
 
 	}
 
+	/**
+	 * reads database for allbooks method - throws badData just incase - should not be needed as data in sql should already be in book format
+	 * @return list of book in the database
+	 * @throws BadData
+	 */
 	public ArrayList<Book>  readDatabase() throws BadData {
 
 		ArrayList<Book> Library = new ArrayList<Book>();
@@ -87,6 +111,11 @@ public class BackEnd {
 		return Library;
 	}
 
+	/**
+	 * used to pull all books from given title
+	 * @param userTitle title of a set of books in the database
+	 * @return list of books
+	 */
 	public ArrayList<Book>  listBarcodes(String userTitle)  {
 
 		ArrayList<Book> Barcodes = new ArrayList<Book>();

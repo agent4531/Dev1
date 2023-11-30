@@ -18,8 +18,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Control {
 
+	public Control(){
+
+	};
 	/*
 	 *   Name:               Evan Tatavitto
 	 *   Course:             Dev1
@@ -128,6 +132,11 @@ public class Control {
 	}
 	*/
 
+	/**
+	 * method for making a new book and sending it to the database
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void newSubmit(ActionEvent event) throws IOException {//validates new books then sends to main
 		first:{
@@ -160,6 +169,12 @@ public class Control {
 		}
 
 	}
+
+	/**
+	 * used load the scene for showing all the books
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void allOnClick(ActionEvent event) throws IOException {// switches to all books interface
 		stage = (Stage) allBtn.getScene().getWindow();
@@ -170,6 +185,11 @@ public class Control {
 		stage.show();
 
 	}
+
+	/**
+	 * used to load all of the books in the database
+	 * @param event
+	 */
 	@FXML
 	void loadBooks(ActionEvent event) {
 		// loads all books in the library
@@ -198,6 +218,11 @@ public class Control {
 		allTable.setItems(data); // addes all items in the library (through ObservableList)
 	}
 
+	/**
+	 * use to go back to the main screen from any scene
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void backOnClick(ActionEvent event) throws IOException { // loads main when clicking back button on all sub scenes screens
 		stage = (Stage) LMSBackBtn.getScene().getWindow();
@@ -208,6 +233,11 @@ public class Control {
 		stage.show();
 	}
 
+	/**
+	 * loads check in book scene
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void inOnClick(ActionEvent event) throws IOException { // loads check in page
 		stage = (Stage) inBtn.getScene().getWindow();
@@ -218,6 +248,11 @@ public class Control {
 		stage.show();
 	}
 
+	/**
+	 * loads new book scene
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void newOnClick(ActionEvent event) throws IOException { // loads new book page
 		stage = (Stage) newBtn.getScene().getWindow();
@@ -228,6 +263,11 @@ public class Control {
 		stage.show();
 	}
 
+	/**
+	 * loads checked out scene
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void outOnClick(ActionEvent event) throws IOException { // loads check out page
 		stage = (Stage) outBtn.getScene().getWindow();
@@ -239,6 +279,11 @@ public class Control {
 
 	}
 
+	/**
+	 * loads remove book scene
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void rmOnClick(ActionEvent event) throws IOException { // loads remove book page
 		stage = (Stage) removeBtn.getScene().getWindow();
@@ -249,6 +294,11 @@ public class Control {
 		stage.show();
 	}
 
+	/**
+	 * removes selected button
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void rmBarcodeBtn(ActionEvent event) throws IOException { // method to validate title or barcode and remove a book from the library
 		trybarcode:// if the barcode is invalid prevents loading of main
@@ -294,6 +344,10 @@ public class Control {
 		}
 	}
 
+	/**
+	 * used to check and load barcodes of given titles
+	 * @param event
+	 */
 	@FXML
 	void titleBtn(ActionEvent event) { // shows all barcodes linked with a title - must be exact - must use barcode or back button to go back to main
 		Barcodes.clear();
@@ -313,6 +367,11 @@ public class Control {
 		}
 	}
 
+	/**
+	 * used to check a book in
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void inBarcodeBtn(ActionEvent event) throws IOException { // used to update books to checked in
 		Book userBook;
@@ -375,6 +434,11 @@ public class Control {
 		}
 	}
 
+	/**
+	 * used to check out a book
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void outBarcodeBtn(ActionEvent event) throws IOException {
 		Book userBook;

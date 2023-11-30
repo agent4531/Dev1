@@ -9,6 +9,10 @@ public class BadData extends Exception{
 	 *
 	 */
 
+	/**
+	 * custom error to throw when data is invalidated
+	 * @param type data type with error
+	 */
 	public BadData(String type){//simple Exception for throwing bad data, IE specifies what is being checked (book data) and whether its valid
 			super(type);
 	}

@@ -6,6 +6,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * runs application
+ */
 public class GUI extends Application {
 
 	/*
@@ -20,6 +23,11 @@ public class GUI extends Application {
 		launch(args);
 	}
 
+	/**
+	 * loads main screen
+	 * @param stage
+	 * @throws IOException
+	 */
 	@Override
 	public void start(Stage stage) throws IOException {
 		FXMLLoader LMSLoader = new FXMLLoader(GUI.class.getResource("LMS_GUI.fxml"));
